@@ -1,0 +1,26 @@
+spec/openapi.yaml
+  s_9a2369f9fdb7ae::t_023049c5d822e5 348-352
+  s_9a2369f9fdb7ae::t_53e9596d696466 288
+  s_9a2369f9fdb7ae::t_7d31592381f91b 270
+  s_9a2369f9fdb7ae::t_85f4e823b02e77 179-183
+  s_9a2369f9fdb7ae::t_e28eeb53a51b1f 8
+  s_9a2369f9fdb7ae::t_22138f9fbde863 412-413,426-427,436-437
+  s_9a2369f9fdb7ae::t_77db576eeba539 226,239
+  s_9a2369f9fdb7ae::t_67de64db806fa3 208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2b9ea1a67922d6ceb55c540f6f8d6db6a79f4389",
+  "prompts": {},
+  "sessions": {
+    "s_9a2369f9fdb7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfc83e2c-41ed-4ead-90e7-73542a44b403",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Marcel Effinger <marcel.effinger-extern@immowelt.de>"
+    }
+  }
+}
