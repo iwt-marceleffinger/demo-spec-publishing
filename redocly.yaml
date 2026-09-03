@@ -1,0 +1,7 @@
+apis:
+  main:
+    root: spec/openapi.yaml
+rules:
+  no-unused-components: error
+  operation-2xx-response: error
+  operation-4xx-response: warn

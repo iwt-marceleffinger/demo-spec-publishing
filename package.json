@@ -1,0 +1,16 @@
+{
+  "name": "fenris-publish-spec",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "redocly lint spec/openapi.yaml",
+    "build": "node scripts/release.mjs --local",
+    "preview": "npm run build && npx serve dist -l 5000"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.25.0",
+    "semver": "^7.6.0",
+    "serve": "^14.2.0",
+    "yaml": "^2.5.0"
+  }
+}

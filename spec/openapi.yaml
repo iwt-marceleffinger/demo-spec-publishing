@@ -1,0 +1,442 @@
+openapi: 3.0.3
+info:
+  title: Task Manager API
+  description: |
+    A demo API for managing projects and their tasks. This spec exists to
+    demonstrate publishing OpenAPI documentation as a static, versioned,
+    shareable site.
+  version: 1.0.0
+  contact:
+    name: Fenris
+servers:
+  - url: https://api.example.com/v1
+    description: Production (fictional, demo only)
+
+tags:
+  - name: Projects
+    description: Top-level containers that group related tasks.
+  - name: Tasks
+    description: Units of work that belong to a project.
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /projects:
+    get:
+      operationId: listProjects
+      summary: List projects
+      tags: [Projects]
+      parameters:
+        - name: status
+          in: query
+          description: Filter projects by status.
+          schema:
+            $ref: '#/components/schemas/ProjectStatus'
+        - name: limit
+          in: query
+          description: Maximum number of items to return.
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          description: Opaque pagination cursor returned by a previous call.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A page of projects.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjects'
+              example:
+                items:
+                  - id: proj_01hq
+                    name: Website Relaunch
+                    status: active
+                    createdAt: '2026-01-15T09:00:00Z'
+                  - id: proj_01hr
+                    name: Q3 Roadmap
+                    status: archived
+                    createdAt: '2025-11-02T14:30:00Z'
+                nextCursor: null
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createProject
+      summary: Create a project
+      tags: [Projects]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+            example:
+              name: Mobile App v2
+      responses:
+        '201':
+          description: The created project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+              example:
+                id: proj_01hs
+                name: Mobile App v2
+                status: active
+                createdAt: '2026-03-01T10:00:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /projects/{projectId}:
+    parameters:
+      - name: projectId
+        in: path
+        required: true
+        description: Unique identifier of the project.
+        schema:
+          type: string
+    get:
+      operationId: getProject
+      summary: Get a project
+      tags: [Projects]
+      responses:
+        '200':
+          description: The requested project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+              example:
+                id: proj_01hq
+                name: Website Relaunch
+                status: active
+                createdAt: '2026-01-15T09:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateProject
+      summary: Update a project
+      tags: [Projects]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+            example:
+              status: archived
+      responses:
+        '200':
+          description: The updated project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteProject
+      summary: Delete a project
+      tags: [Projects]
+      responses:
+        '204':
+          description: The project was deleted.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /tasks:
+    get:
+      operationId: listTasks
+      summary: List tasks
+      tags: [Tasks]
+      parameters:
+        - name: projectId
+          in: query
+          description: Filter tasks belonging to a specific project.
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter tasks by status.
+          schema:
+            $ref: '#/components/schemas/TaskStatus'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: cursor
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A page of tasks.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTasks'
+              example:
+                items:
+                  - id: task_01ab
+                    projectId: proj_01hq
+                    title: Draft new homepage copy
+                    status: in_progress
+                    createdAt: '2026-02-10T11:00:00Z'
+                nextCursor: null
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createTask
+      summary: Create a task
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+            example:
+              projectId: proj_01hq
+              title: Set up staging environment
+      responses:
+        '201':
+          description: The created task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              example:
+                id: task_01ac
+                projectId: proj_01hq
+                title: Set up staging environment
+                status: todo
+                createdAt: '2026-03-01T10:05:00Z'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /tasks/{taskId}:
+    parameters:
+      - name: taskId
+        in: path
+        required: true
+        description: Unique identifier of the task.
+        schema:
+          type: string
+    get:
+      operationId: getTask
+      summary: Get a task
+      tags: [Tasks]
+      responses:
+        '200':
+          description: The requested task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+              example:
+                id: task_01ab
+                projectId: proj_01hq
+                title: Draft new homepage copy
+                status: in_progress
+                createdAt: '2026-02-10T11:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateTask
+      summary: Update a task
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+            example:
+              status: done
+      responses:
+        '200':
+          description: The updated task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  responses:
+    NotFound:
+      description: The requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: not_found
+            message: Resource not found.
+    BadRequest:
+      description: The request failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: bad_request
+            message: name is required.
+    Unauthorized:
+      description: The API key is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: unauthorized
+            message: Missing or invalid API key.
+
+  schemas:
+    ProjectStatus:
+      type: string
+      enum: [active, archived]
+
+    TaskStatus:
+      type: string
+      enum: [todo, in_progress, done]
+
+    Project:
+      type: object
+      required: [id, name, status, createdAt]
+      properties:
+        id:
+          type: string
+          example: proj_01hq
+        name:
+          type: string
+          example: Website Relaunch
+        status:
+          $ref: '#/components/schemas/ProjectStatus'
+        createdAt:
+          type: string
+          format: date-time
+
+    ProjectCreate:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          example: Mobile App v2
+
+    ProjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        status:
+          $ref: '#/components/schemas/ProjectStatus'
+
+    PaginatedProjects:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        nextCursor:
+          type: string
+          nullable: true
+
+    Task:
+      type: object
+      required: [id, projectId, title, status, createdAt]
+      properties:
+        id:
+          type: string
+          example: task_01ab
+        projectId:
+          type: string
+          example: proj_01hq
+        title:
+          type: string
+          example: Draft new homepage copy
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        createdAt:
+          type: string
+          format: date-time
+
+    TaskCreate:
+      type: object
+      required: [projectId, title]
+      properties:
+        projectId:
+          type: string
+        title:
+          type: string
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+
+    PaginatedTasks:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        nextCursor:
+          type: string
+          nullable: true
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: not_found
+        message:
+          type: string
+          example: Resource not found.
+        details:
+          type: object
+          additionalProperties: true

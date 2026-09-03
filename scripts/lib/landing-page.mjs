@@ -1,0 +1,40 @@
+export function renderLandingPage({ versions, latest }) {
+  const items = versions
+    .slice()
+    .reverse()
+    .map((v) => `      <li><a href="./${v}/">${v}${v === latest ? ' (latest)' : ''}</a></li>`)
+    .join('\n');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Task Manager API - Docs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 4rem auto; padding: 0 1.5rem; color: #1a1a1a; }
+    h1 { font-size: 1.5rem; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { padding-left: 1.25rem; }
+    .latest-link { display: inline-block; margin: 1rem 0 2rem; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <h1>Task Manager API</h1>
+  <p><a class="latest-link" href="./latest/">View latest docs (v${latest}) &rarr;</a></p>
+  <p>All published versions:</p>
+  <ul>
+${items}
+  </ul>
+  <script>
+    // Progressive enhancement only: redirect bare "?go=latest" links.
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('go') === 'latest') {
+      window.location.replace('./latest/');
+    }
+  </script>
+</body>
+</html>
+`;
+}

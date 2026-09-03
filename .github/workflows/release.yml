@@ -1,0 +1,51 @@
+name: Publish API docs
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main (tag ref)
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Checkout gh-pages into ./gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+          fetch-depth: 0
+        continue-on-error: true
+
+      - name: Ensure gh-pages dir exists (first release bootstrap)
+        run: mkdir -p gh-pages
+
+      - name: Run release script (lint + version check + build + manifest)
+        run: node scripts/release.mjs
+        env:
+          PUBLISH_DIR: ${{ github.workspace }}/gh-pages
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+          keep_files: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
