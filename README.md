@@ -1,4 +1,4 @@
-# fenris-publish-spec
+# demo-spec-publishing
 
 A demo Task Manager OpenAPI spec, published as a static, versioned docs
 site so it can be shared via a link and evolved over time.
@@ -25,8 +25,8 @@ landing `index.html`.
 
 ## Shareable links
 
-- Always current: `https://axel-springer-kugawana.github.io/fenris-publish-spec/latest/`
-- Pinned to a specific version: `https://axel-springer-kugawana.github.io/fenris-publish-spec/<version>/`
+- Always current: `https://iwt-marceleffinger.github.io/demo-spec-publishing/latest/`
+- Pinned to a specific version: `https://iwt-marceleffinger.github.io/demo-spec-publishing/<version>/`
   (e.g. `.../1.0.0/`)
 
 ## Adding or changing an endpoint

@@ -1,5 +1,5 @@
 {
-  "name": "fenris-publish-spec",
+  "name": "demo-spec-publishing",
   "private": true,
   "type": "module",
   "scripts": {
