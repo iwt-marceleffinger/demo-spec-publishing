@@ -5,7 +5,7 @@ info:
     A demo API for managing projects and their tasks. This spec exists to
     demonstrate publishing OpenAPI documentation as a static, versioned,
     shareable site.
-  version: 1.0.0
+  version: 1.1.0
   contact:
     name: Fenris
 servers:
@@ -176,6 +176,11 @@ paths:
           description: Filter tasks by status.
           schema:
             $ref: '#/components/schemas/TaskStatus'
+        - name: priority
+          in: query
+          description: Filter tasks by priority.
+          schema:
+            $ref: '#/components/schemas/TaskPriority'
         - name: limit
           in: query
           schema:
@@ -200,6 +205,7 @@ paths:
                     projectId: proj_01hq
                     title: Draft new homepage copy
                     status: in_progress
+                    priority: medium
                     createdAt: '2026-02-10T11:00:00Z'
                 nextCursor: null
         '401':
@@ -217,6 +223,7 @@ paths:
             example:
               projectId: proj_01hq
               title: Set up staging environment
+              priority: high
       responses:
         '201':
           description: The created task.
@@ -229,6 +236,7 @@ paths:
                 projectId: proj_01hq
                 title: Set up staging environment
                 status: todo
+                priority: high
                 createdAt: '2026-03-01T10:05:00Z'
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -259,6 +267,7 @@ paths:
                 projectId: proj_01hq
                 title: Draft new homepage copy
                 status: in_progress
+                priority: medium
                 createdAt: '2026-02-10T11:00:00Z'
         '401':
           $ref: '#/components/responses/Unauthorized'
@@ -276,6 +285,7 @@ paths:
               $ref: '#/components/schemas/TaskUpdate'
             example:
               status: done
+              priority: low
       responses:
         '200':
           description: The updated task.
@@ -334,6 +344,11 @@ components:
     TaskStatus:
       type: string
       enum: [todo, in_progress, done]
+
+    TaskPriority:
+      type: string
+      enum: [low, medium, high]
+      default: medium
 
     Project:
       type: object
@@ -394,6 +409,8 @@ components:
           example: Draft new homepage copy
         status:
           $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
         createdAt:
           type: string
           format: date-time
@@ -406,6 +423,8 @@ components:
           type: string
         title:
           type: string
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
 
     TaskUpdate:
       type: object
@@ -414,6 +433,8 @@ components:
           type: string
         status:
           $ref: '#/components/schemas/TaskStatus'
+        priority:
+          $ref: '#/components/schemas/TaskPriority'
 
     PaginatedTasks:
       type: object
