@@ -1,0 +1,24 @@
+package.json
+  s_9a2369f9fdb7ae::t_338d7173618cb6 2
+README.md
+  s_9a2369f9fdb7ae::t_48e7569b50ba15 28-29
+  s_9a2369f9fdb7ae::t_8f07f4e9d82417 1
+package-lock.json
+  s_9a2369f9fdb7ae::t_cd8a051d6f842d 2,7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "bdb6333fa0d519c865cc89b6204fd6ad9dd00388",
+  "prompts": {},
+  "sessions": {
+    "s_9a2369f9fdb7ae": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfc83e2c-41ed-4ead-90e7-73542a44b403",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "Marcel Effinger <marcel.effinger-extern@immowelt.de>"
+    }
+  }
+}
